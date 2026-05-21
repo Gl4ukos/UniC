@@ -46,7 +46,7 @@ int STICK_2_X_MEAN = 0;
 int STICK_2_Y_MEAN = 0;
 int STICK_MAX = 3000;
 int STICK_HALF = STICK_MAX/2;
-float DEADZONE = STICK_MAX*0.1;
+float DEADZONE = STICK_HALF*0.2;
 
 uint8_t RTT_check_period = 200 ; // ms
 uint32_t ACKS_expected = 0 ;

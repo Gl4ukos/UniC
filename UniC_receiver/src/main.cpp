@@ -80,12 +80,43 @@ struct Led{
 
 
 void update_mouse() {
-    int8_t dx = packet.x2 / (sensitivity + 1);   // reduce sensitivity
-    int8_t dy = packet.y2 / (sensitivity + 1);
+    int8_t dx,dy;
+    int8_t sign;
 
-    // deadzone (VERY important)
-    if (abs(dx) < 2) dx = 0;
-    if (abs(dy) < 2) dy = 0;
+    if(packet.x2 != 0){
+        if(packet.x2 > 0){
+            sign = 1;
+        }else{
+            sign = -1;
+        }
+
+        if (abs(packet.x2) < 80){
+            dx = 1*sign;
+        }else{
+            dx = 3*sign;
+        }
+    }else{
+        packet.x2 = 0;
+    }
+
+    if(packet.y2 != 0){
+        if(packet.y2 > 0){
+            sign = 1;
+        }else{
+            sign = -1;
+        }
+
+        if (abs(packet.y2) < 80){
+            dy = 1*sign;
+        }else{
+            dy = 3*sign;
+        }
+    }else{
+        packet.y1 = 0;
+    }
+
+    dx *= round(1 + (sensitivity/5) );
+    dy *= round(1 + (sensitivity/5) );
 
     mouse.move(dx, dy);
 }
