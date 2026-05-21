@@ -66,7 +66,7 @@ Display_Interface Display;
 ControllerPacket packet;
 bool updated = false;
 uint32_t last_display = millis();
-uint8_t display_period = 10; //ms
+uint8_t display_period = 20; //ms
 
 
 uint32_t clip_pot_value(uint32_t pot_val){
@@ -90,7 +90,7 @@ uint32_t clip_joystick_value(uint32_t j_val){
 }
 
 void print_packet(){
-  delay(20);
+  delay(10);
   // Serial.print(" --- PACKET --- \n");
   Serial.print("J1: ");
   Serial.print(packet.x1);
@@ -236,7 +236,11 @@ void loop() {
     ACKS_expected +=1;
     packet.check_RTT = false;
   }else{
-    esp_now_send(receiverMAC, (uint8_t *)&packet, sizeof(packet));
+    if(updated == true){
+      Serial.println("Sent");
+      esp_now_send(receiverMAC, (uint8_t *)&packet, sizeof(packet));
+      updated = false;
+    }
   }
   
   if (millis() - last_ack_time > 4 * RTT_check_period) {
@@ -247,11 +251,21 @@ void loop() {
   delay(20);
 }
 
+int8_t prev_sw1, prev_sw2;
 void read_switches(){
   packet.sw1 = digitalRead(Pins.SWITCH_1);  
   Display.activity.s1 = packet.sw1;
+  if(prev_sw1 != packet.sw1){
+    updated = true;
+    prev_sw1 = packet.sw1;
+  }
+
   packet.sw2 = digitalRead(Pins.SWITCH_2);
   Display.activity.s2 = packet.sw2;
+  if(prev_sw2 != packet.sw2){
+    updated = true;
+    prev_sw2 = packet.sw2;
+  }
 }
 
 float pot1_filtered = 0;
@@ -290,53 +304,77 @@ void read_joysticks(){
   Display.activity.j1 = Display_Interface::INACTIVE;
   if(packet.b1 != 0){
     Display.activity.j1 = Display_Interface::PRESS;
+    updated = true;
   }
   else if (abs(x1_centered) <= DEADZONE){
+    if(packet.x1 != 0){
+      updated = true;
+    }
     packet.x1 = (int8_t)(0);
   }else if (x1_centered >= 0){ // LEFT
+    updated = true;
     packet.x1 = (int8_t)((x1_centered/(STICK_MAX-STICK_1_X_MEAN))*100);
     Display.activity.j1 = Display_Interface::LEFT;
   }else{  //RIGHT
+    updated = true;
     packet.x1 = (int8_t)((x1_centered/(STICK_1_X_MEAN))*100);
     Display.activity.j1 = Display_Interface::RIGHT;
   }
   if(abs(y1_centered) <= DEADZONE){
     packet.y1 = (int8_t)(0);
   }else if(y1_centered >= 0){
+    updated = true;
     packet.y1 = (int8_t)((y1_centered/(STICK_MAX-STICK_1_Y_MEAN))*100);
     Display.activity.j1 = (Display_Interface::Joystick_state)(Display.activity.j1 | Display_Interface::UP); // UP
   }else{
+    updated = true;
     packet.y1 = (int8_t)((y1_centered/(STICK_1_Y_MEAN))*100);
     Display.activity.j1 = (Display_Interface::Joystick_state)(Display.activity.j1 | Display_Interface::DOWN); // DOWN
   }
 
-  
-
   Display.activity.j2 = Display_Interface::INACTIVE;
   if(packet.b2 != 0){
+    updated = true;
     Display.activity.j2 = Display_Interface::PRESS;
   }
   else if (abs(x2_centered) <= DEADZONE){
+    if(packet.x2 != 0){
+      updated = true;
+    }
     packet.x2 = (int8_t)(0);
   }else if (x2_centered >= 0){
+    updated = true;
     packet.x2 = (int8_t)((x2_centered/(STICK_MAX-STICK_2_X_MEAN))*100);
     Display.activity.j2 = Display_Interface::RIGHT; // RIGHT
   }else{
+    updated = true;
     packet.x2 = (int8_t)((x2_centered/(STICK_2_X_MEAN))*100);
     Display.activity.j2 = Display_Interface::LEFT; // LEFT
   }
   if(abs(y2_centered) <= DEADZONE){
     packet.y2 = (int8_t)(0);
   }else if(y2_centered >= 0){
+    updated = true;
     packet.y2 = (int8_t)((y2_centered/(STICK_MAX-STICK_2_Y_MEAN))*100);
     Display.activity.j2 = (Display_Interface::Joystick_state)(Display.activity.j2 | Display_Interface::DOWN); // DOWN
   }else{
+    updated = true;
     packet.y2 = (int8_t)((y2_centered/(STICK_2_Y_MEAN))*100);
     Display.activity.j2 = (Display_Interface::Joystick_state)(Display.activity.j2 | Display_Interface::UP); // UP
   }
+
 }
 
+int8_t prev_b1, prev_b2;
 void read_buttons(){
   packet.b1 = (digitalRead(Pins.STICK_1_BUTTON) == 0);
+  if(packet.b1 != prev_b1){
+    updated = true;
+    prev_b1 = packet.b1;
+  }
   packet.b2 = (digitalRead(Pins.STICK_2_BUTTON) == 0);
+  if(packet.b2 != prev_b2){
+    updated = true;
+    prev_b2 = packet.b2;
+  }
 }
