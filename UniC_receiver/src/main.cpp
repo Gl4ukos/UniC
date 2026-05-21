@@ -121,8 +121,22 @@ void update_mouse() {
     mouse.move(dx, dy);
 }
 
-void update_keyboard(){
+bool last_b2 = 0;
+
+void update_keystrokes(){
     sensitivity = packet.pot2;
+
+    // left mouse button
+    bool current = packet.b2;
+    // button just pressed
+    if (current == 1 && last_b2 == 0) {
+        mouse.press(MOUSE_LEFT);
+    }
+    // button just released
+    if (current == 0 && last_b2 == 1) {
+        mouse.release(MOUSE_LEFT);
+    }
+    last_b2 = current;
 }
 
 // void update_gamepad()
@@ -219,7 +233,7 @@ void loop() {
             // update_gamepad();
         }else{
             update_mouse();
-            update_keyboard();
+            update_keystrokes();
         }
     }
 }
