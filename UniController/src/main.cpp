@@ -243,7 +243,8 @@ void loop() {
       signal_latency = 100; // SIGNAL LOST
   }
 
-  print_packet();
+  // print_packet();
+  delay(20);
 }
 
 void read_switches(){
@@ -253,22 +254,29 @@ void read_switches(){
   Display.activity.s2 = packet.sw2;
 }
 
+float pot1_filtered = 0;
+float pot2_filtered = 0;
 
 void read_potentiometers(){
-  int32_t new_pot1 = (int8_t)round((clip_pot_value(analogRead(Pins.POT1)) *100/POT_MAX));
-  if(abs(packet.pot1 - new_pot1) > 1){ //only if change is noticeable
-    updated = true;
-    packet.pot1 = new_pot1;
-    Display.activity.p1 = packet.pot1;
+  int raw = clip_pot_value(analogRead(Pins.POT1));
+  float normalized = (raw * 100.0f) / POT_MAX;
+  pot1_filtered = pot1_filtered * 0.7f + normalized * 0.3f;
+  int new_pot1 = (int)round(pot1_filtered);
+  if (new_pot1 != packet.pot1) {
+      updated = true;
+      packet.pot1 = new_pot1;
+      Display.activity.p1 = packet.pot1;
   }
 
-  int32_t new_pot2 = (int8_t)(round(100 - ((clip_pot_value(analogRead(Pins.POT2))) *100/POT_MAX)));
-  if(abs(packet.pot2 - new_pot2) > 1){ //only if change is noticeable
-    updated = true;
-    packet.pot2 = new_pot2;
-    Display.activity.p2 = packet.pot2;
+  raw = clip_pot_value(analogRead(Pins.POT2));
+  normalized = 100- (raw * 100.0f) / POT_MAX;
+  pot2_filtered = pot2_filtered * 0.7f + normalized * 0.3f;
+  int new_pot2 = (int)round(pot2_filtered);
+  if (new_pot2 != packet.pot2) {
+      updated = true;
+      packet.pot2 = new_pot2;
+      Display.activity.p2 = packet.pot2;
   }
-
 }
 
 void read_joysticks(){
