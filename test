@@ -1,0 +1,82 @@
+Verbose mode can be enabled via `-v, --verbose` option
+CONFIGURATION: https://docs.platformio.org/page/boards/espressif32/rymcu-esp32-devkitc.html
+PLATFORM: Espressif 32 (6.13.0) > RYMCU ESP32-DevKitC
+HARDWARE: ESP32 240MHz, 320KB RAM, 4MB Flash
+DEBUG: Current (cmsis-dap) External (cmsis-dap, esp-bridge, esp-prog, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa)
+PACKAGES:
+ - framework-arduinoespressif32 @ 3.20017.241212+sha.dcc1105b
+ - tool-esptoolpy @ 2.41100.0 (4.11.0)
+ - tool-mkfatfs @ 2.0.1
+ - tool-mklittlefs @ 1.203.210628 (2.3)
+ - tool-mkspiffs @ 2.230.0 (2.30)
+ - toolchain-xtensa-esp32 @ 8.4.0+2021r2-patch5
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ soft
+Found 33 compatible libraries
+Scanning dependencies...
+No dependencies
+Building in release mode
+Retrieving maximum program size .pio\build\rymcu-esp32-devkitc\firmware.elf
+Checking size .pio\build\rymcu-esp32-devkitc\firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]   8.7% (used 28548 bytes from 327680 bytes)
+Flash: [====      ]  39.0% (used 510901 bytes from 1310720 bytes)
+Configuring upload protocol...
+AVAILABLE: cmsis-dap, esp-bridge, esp-prog, espota, esptool, iot-bus-jtag, jlink, minimodule, olimex-arm-usb-ocd, olimex-arm-usb-ocd-h, olimex-arm-usb-tiny-h, olimex-jtag-tiny, tumpa
+CURRENT: upload_protocol = esptool
+Looking for upload port...
+Using manually specified: COM8
+Uploading .pio\build\rymcu-esp32-devkitc\firmware.bin
+esptool.py v4.11.0
+Serial port COM8
+Connecting......
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None    
+Crystal is 40MHz
+MAC: e0:8c:fe:61:7f:c8
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00005fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x0000e000 to 0x0000ffff...
+Flash will be erased from 0x00010000 to 0x0008cfff...
+SHA digest in image updated
+Compressed 17536 bytes to 12202...
+Writing at 0x00001000... (100 %)
+Wrote 17536 bytes (12202 compressed) at 0x00001000 in 0.5 seconds (effective 259.0 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 146...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (146 compressed) at 0x00008000 in 0.1 seconds (effective 279.2 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 47...
+Writing at 0x0000e000... (100 %)
+Wrote 8192 bytes (47 compressed) at 0x0000e000 in 0.1 seconds (effective 546.0 kbit/s)...
+Hash of data verified.
+Compressed 511264 bytes to 255888...
+Writing at 0x00010000... (6 %)
+Writing at 0x0001b37c... (12 %)
+Writing at 0x0002fe26... (18 %)
+Writing at 0x000358c1... (25 %)
+Writing at 0x0003ab14... (31 %)
+Writing at 0x000400cd... (37 %)
+Writing at 0x00046216... (43 %)
+Writing at 0x0004eb68... (50 %)
+Writing at 0x00056405... (56 %)
+Writing at 0x0005e559... (62 %)
+Writing at 0x00064e3a... (68 %)
+Writing at 0x0006c8f4... (75 %)
+Writing at 0x00075a85... (81 %)
+Writing at 0x0007eb44... (87 %)
+Writing at 0x00083fd1... (93 %)
+Writing at 0x000894cf... (100 %)
+Wrote 511264 bytes (255888 compressed) at 0x00010000 in 7.1 seconds (effective 579.9 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+============================= [SUCCESS] Took 16.97 seconds ============================= *  Terminal will be reused by tasks, press any key to close it. 
