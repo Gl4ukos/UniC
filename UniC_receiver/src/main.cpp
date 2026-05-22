@@ -78,6 +78,25 @@ struct Led{
 
 };
 
+uint8_t scroll_threshold = 10;
+uint8_t scroll_softcap = 20;
+void update_scrolller(){
+    uint8_t scroll_value = packet.pot1;
+
+    if(scroll_value > 50 + scroll_threshold){
+        if(scroll_value > 50 + scroll_threshold + scroll_softcap){
+            mouse.move(0,0,1);
+        }else{
+            mouse.move(0,0,2);
+        }
+    }else if(scroll_value < 50 - scroll_threshold){
+        if(scroll_value < 50 - scroll_threshold - scroll_softcap){
+            mouse.move(0,0,-1);
+        }else{
+            mouse.move(0,0,-2);
+        }
+    }
+}
 
 void update_mouse() {
     int8_t dx,dy;
@@ -95,8 +114,6 @@ void update_mouse() {
         }else{
             dx = 3*sign;
         }
-    }else{
-        packet.x2 = 0;
     }
 
     if(packet.y2 != 0){
@@ -111,8 +128,6 @@ void update_mouse() {
         }else{
             dy = 3*sign;
         }
-    }else{
-        packet.y1 = 0;
     }
 
     dx *= round(1 + (sensitivity/5) );
@@ -122,6 +137,34 @@ void update_mouse() {
 }
 
 bool last_b2 = 0;
+bool last_b1 = 0;
+
+
+void update_arrows() {
+    if(packet.y1 < -50){
+        keyboard.press(KEY_UP_ARROW);
+    } else {
+        keyboard.release(KEY_UP_ARROW);
+    }
+
+    if(packet.y1 > 50){
+        keyboard.press(KEY_DOWN_ARROW);
+    } else {
+        keyboard.release(KEY_DOWN_ARROW);
+    }
+
+    if(packet.x1 > 50){
+        keyboard.press(KEY_RIGHT_ARROW);
+    } else {
+        keyboard.release(KEY_RIGHT_ARROW);
+    }
+
+    if(packet.x1 < -50){
+        keyboard.press(KEY_LEFT_ARROW);
+    } else {
+        keyboard.release(KEY_LEFT_ARROW);
+    }
+}
 
 void update_keystrokes(){
     sensitivity = packet.pot2;
@@ -137,6 +180,22 @@ void update_keystrokes(){
         mouse.release(MOUSE_LEFT);
     }
     last_b2 = current;
+
+    // right mouse button
+    current = packet.b1;
+    // button just pressed
+    if (current == 1 && last_b1 == 0) {
+        mouse.press(MOUSE_RIGHT);
+    }
+    // button just released
+    if (current == 0 && last_b1 == 1) {
+        mouse.release(MOUSE_RIGHT);
+    }
+    last_b1 = current;
+
+    update_arrows();
+    
+
 }
 
 // void update_gamepad()
@@ -234,6 +293,7 @@ void loop() {
         }else{
             update_mouse();
             update_keystrokes();
+            update_scrolller();
         }
     }
 }
