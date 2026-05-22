@@ -286,6 +286,7 @@ void setup(){
 }
 
 void loop() {
+    delay(20);
     if(got_packet == true){
         got_packet = false;
         if(packet.sw1 == false){
