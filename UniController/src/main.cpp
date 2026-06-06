@@ -10,6 +10,8 @@
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
+
+
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 unsigned long start = millis();
 
@@ -67,7 +69,6 @@ ControllerPacket packet;
 bool updated = false;
 uint32_t last_display = millis();
 uint8_t display_period = 20; //ms
-
 
 uint32_t clip_pot_value(uint32_t pot_val){
   if(pot_val > POT_MAX){
