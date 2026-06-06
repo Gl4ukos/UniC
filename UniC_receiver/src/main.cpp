@@ -10,6 +10,9 @@
 #define WHITE_LED_PIN 6
 #define BLUE_LED_PIN 7
 
+#define TEE_EX 9 //white
+#define AHRR_EX 10 //green
+
 // USBHIDGamepad gamepad;
 USBHIDMouse mouse;
 int8_t mouse_x, mouse_y; 
@@ -21,10 +24,12 @@ PingPacket pong;
 
 enum ControllerMode{
     GAMEPAD,
-    MOUSE_KEYBOARD
+    MOUSE_KEYBOARD,
+    SERIAL_UART
 };
 
 uint8_t loop_index = 0;
+
 
 struct Led{
     uint8_t pin_no;
@@ -198,6 +203,21 @@ void update_keystrokes(){
 
 }
 
+void transmit_packet_serial(){
+    Serial1.write(packet.padding);
+
+    Serial1.write(packet.x1);
+    Serial1.write(packet.y1);
+    Serial1.write(packet.x2);
+    Serial1.write(packet.y2);
+
+    Serial1.write(packet.pot1);
+    Serial1.write(packet.pot2);
+
+    Serial1.write(packet.sw1);
+    Serial1.write(packet.sw2);
+}
+
 // void update_gamepad()
 // {
 //     int8_t lx = packet.x1;   // already -100..100?
@@ -215,6 +235,7 @@ void update_keystrokes(){
 
 //     gamepad.send(lx, ly, z, rz, rx, ry, hat, buttons);
 // }
+
 
 Led white_led(WHITE_LED_PIN, 50, 4000);
 Led blue_led(BLUE_LED_PIN, 25, 5000);
@@ -243,7 +264,8 @@ void print_MAC(){
 }
 
 void setup(){
-    Serial.begin(921600);
+    Serial.begin(115200);
+    Serial1.begin(115200, SERIAL_8N1, AHRR_EX, TEE_EX);
     WiFi.mode(WIFI_STA); // station mode needed for ESP-NOW
 
     // Initialize ESP-NOW
@@ -285,16 +307,20 @@ void setup(){
     print_MAC();
 }
 
-void loop() {
-    delay(20);
+void loop() {    
     if(got_packet == true){
         got_packet = false;
-        if(packet.sw1 == false){
-            // update_gamepad();
+
+        if(packet.sw2 == true){// serial uart output
+            transmit_packet_serial();
         }else{
-            update_mouse();
-            update_keystrokes();
-            update_scrolller();
+            if(packet.sw1 == false){
+                // update_gamepad();
+            }else{
+                update_mouse();
+                update_keystrokes();
+                update_scrolller();
+            }
         }
     }
 }
