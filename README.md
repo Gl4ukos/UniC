@@ -1,81 +1,45 @@
 # UniC
 
-**UniC** (short for **Universal Controller**) is a wireless control system designed to provide plug-and-play compatibility with **Windows**, **Linux**, and **microcontrollers**.
+**UniC** (Universal Controller) is a wireless controller system designed to work with Windows, Linux, and microcontrollers without requiring platform-specific hardware.
 
----
+The system consists of a handheld controller and a receiver module communicating over ESP-NOW.
 
-## Features
+## What it can do
 
-### PC Control Modes
+* Emulate a USB gamepad on a PC.
+* Emulate a USB mouse and limited keyboard inputs.
+* Communicate with external microcontrollers over UART.
+* Display latency and packet loss in real time.
+* Adjust control parameters using onboard potentiometers.
 
-* **Gamepad Mode**
+## Hardware
 
-  * Control robots in simulation.
-  * Play simple games.
+### Controller
 
-* **Mouse & Keyboard Mode**
+ESP32 DevKit V1 in a 3D-printed enclosure containing:
 
-  * Remote desktop interaction (Full mouse functionality and limited keyboard support).
-    
-### Microcontroller Mode
+* 2 joysticks
+* 2 switches
+* 2 potentiometers
+* 8 buttons
+* 128×64 OLED display
+* Kill switch
 
-* UART communication with external microcontrollers.
-* Add wireless control to existing projects.
+The controller generates commands and transmits them to the receiver using ESP-NOW.
 
-## System Architecture
+### Receiver
 
-UniC consists of two main modules:
+ESP32-S3 Mini with two status LEDs.
 
-### Controller Unit
+The receiver handles communication with the controlled system and supports:
 
-The controller is based on an **ESP32 DevKit V1** housed in a custom 3D-printed enclosure.
+* USB HID (gamepad, mouse, keyboard)
+* UART
 
-#### Hardware
+It also measures RTT and monitors connection quality.
 
-* 2 × Joysticks
-* 2 × Switches
-* 2 × Potentiometers
-* 8 × Buttons
-* 128×64 OLED Display
-* Kill Switch
+## TODO
 
-#### Responsibilities
-
-* Generates control commands.
-* Sends commands via ESP-NOW.
-* Allows real-time parameter tuning using potentiometers.
-* Displays control values, latency, and packet loss.
-* Provides an emergency stop.
-
-
----
-
-### Receiver / Driver Unit
-
-The receiver is based on an **ESP32-S3 Mini**.
-
-#### Hardware
-
-* ESP32-S3 Mini
-* 2 × Status LEDs
-
-#### Responsibilities
-
-* Receives controller commands.
-* Measures round-trip latency.
-* Displays connection status through LEDs.
-* Interfaces with the controlled system.
-
-#### Supported Interfaces
-
-**PC**
-
-* USB HID Gamepad
-* USB HID Mouse
-* USB HID Keyboard
-
-**Microcontroller**
-
-* UART Communication
-
-
+* [ ] Add functionality for unused buttons.
+* [ ] Add R1, R2, L1 and L2 gamepad buttons.
+* [ ] Clean up and reorganize the codebase.
