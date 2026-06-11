@@ -1,38 +1,81 @@
-﻿# UniC
-UniC is short for Universal Controller.
+# UniC
 
-The concept behind this project is an implementation of a controller that has "plug and play" type compatibility with Windows and Linux machines as well as other microcontrollers (unlike a typical PS4 controller for example). 
+**UniC** (short for **Universal Controller**) is a wireless control system designed to provide plug-and-play compatibility with **Windows**, **Linux**, and **microcontrollers**.
 
-The UniC is able to remotely send control commands to a PC as in:
--> A gamepad configuration. (For controlling a robot in simulation, or playing sinmple games) 
+---
 
--> A mouse and keyboard configuration. (Useful for generally using the PC, remotely. It can replicate all mouse functions and some limited keystrokes)
+## Features
 
--> It is also capable of communicating with any microcontroller using UART. (To just strap remote controller functionality to anything with a microcontroller)
+### PC Control Modes
 
+* **Gamepad Mode**
 
+  * Control robots in simulation.
+  * Play simple games.
 
-The UniC is rather a system of two modules:
--> The actual controller:
-    The controller is an ESP32-devkitv1 enclosed in a 3D printed case, which mounts:
-      -> 2 Joysticks
-      -> 2 Switches
-      -> 2 Potentiometers
-      -> 8 Buttons
-      -> A 128x64 Oled Screen
-      -> A kill-switch
-    The controller produces the commands and sends them using ESP-NOW protocol to the receiver module.
-    It can tune a max of two parameters affecting control, in real time, by the potentiometers.
-    It displays the commands on the little screen, alongside latency and packet loss.
-    The kill-switch exists for safety reasons when controlling a robot.
+* **Mouse & Keyboard Mode**
+
+  * Remote desktop interaction (Full mouse functionality and limited keyboard support).
     
--> The receiver/driver.
-    The receiver/driver module is an ESP32-S3 mini with two leds soldered on it.
-    This module receives the commands and sends RTT measuring requests to the controller to measure the connection's quality.
-    The two leds blink at certain hardcoded frequencies, to display connectivity to the controller and the controlled system on the other side. 
-    This module also contains the drivers that interface with the system being controlled. In case of a PC it uses its HID interface and in case of a microcontroller the UART interface.  
+### Microcontroller Mode
+
+* UART communication with external microcontrollers.
+* Add wireless control to existing projects.
+
+## System Architecture
+
+UniC consists of two main modules:
+
+### Controller Unit
+
+The controller is based on an **ESP32 DevKit V1** housed in a custom 3D-printed enclosure.
+
+#### Hardware
+
+* 2 × Joysticks
+* 2 × Switches
+* 2 × Potentiometers
+* 8 × Buttons
+* 128×64 OLED Display
+* Kill Switch
+
+#### Responsibilities
+
+* Generates control commands.
+* Sends commands via ESP-NOW.
+* Allows real-time parameter tuning using potentiometers.
+* Displays control values, latency, and packet loss.
+* Provides an emergency stop.
 
 
-TODO:
--> There is no utility for the buttons yet and to simulate a gamepad it needs 4 extra buttons (R1, R2, L1, L2).
--> Make code prettier (libraries n such)
+---
+
+### Receiver / Driver Unit
+
+The receiver is based on an **ESP32-S3 Mini**.
+
+#### Hardware
+
+* ESP32-S3 Mini
+* 2 × Status LEDs
+
+#### Responsibilities
+
+* Receives controller commands.
+* Measures round-trip latency.
+* Displays connection status through LEDs.
+* Interfaces with the controlled system.
+
+#### Supported Interfaces
+
+**PC**
+
+* USB HID Gamepad
+* USB HID Mouse
+* USB HID Keyboard
+
+**Microcontroller**
+
+* UART Communication
+
+
