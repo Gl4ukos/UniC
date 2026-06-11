@@ -42,4 +42,4 @@ It also measures RTT and monitors connection quality.
 
 * [ ] Add functionality for unused buttons.
 * [ ] Add R1, R2, L1 and L2 gamepad buttons.
-* [ ] Clean up and reorganize the codebase.
+* [ ] Clean up code and use libraries.
